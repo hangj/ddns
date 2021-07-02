@@ -22,12 +22,13 @@ def checkResponse(func):
 
 
 def REQ(url, params=None, headers=None):
+	headers = headers or {}
 	if params: # dict
-		params = json.dumps(params) if 'application/json' in headers['Content-Type'].lower() else parse.urlencode(params)
+		params = json.dumps(params) if headers['Content-Type'] and 'application/json' in headers['Content-Type'] else parse.urlencode(params)
 		params = params.encode('utf-8')
 		
 	# 当 params 不为空，method 为 POST
-	req = request.Request(url, params, headers or {})
+	req = request.Request(url, params, headers)
 	with request.urlopen(req, timeout=60) as page:
 		res = page.read()
 
