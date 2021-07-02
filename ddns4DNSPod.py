@@ -23,7 +23,9 @@ def checkResponse(func):
 
 def REQ(url, params=None, headers=None):
 	if params: # dict
-		params = parse.urlencode(params).encode('utf-8')
+		params = json.dumps(params) if 'application/json' in headers['Content-Type'].lower() else parse.urlencode(params)
+		params = params.encode('utf-8')
+		
 	# 当 params 不为空，method 为 POST
 	req = request.Request(url, params, headers or {})
 	with request.urlopen(req, timeout=60) as page:
@@ -34,7 +36,7 @@ def REQ(url, params=None, headers=None):
 		else:
 			res = res.decode('utf-8')
 
-		if page.getheader('Content-Type').lower().find('application/json') >= 0:
+		if 'application/json' in page.getheader('Content-Type').lower():
 			res = json.loads(res)
 
 		return res
