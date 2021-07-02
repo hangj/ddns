@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# encoding: utf-8
+# -*- coding: utf-8 -*-
 
 # https://www.dnspod.cn/docs/index.html
 # https://www.cnblogs.com/hangj/p/14942691.html
