@@ -188,7 +188,7 @@ def checkCrontab(stop=False, minutes=1):
 
 	if stop: return
 
-	job = ct.new(command=f'/usr/local/bin/python {__file__}', comment=comment)
+	job = ct.new(command=f'/usr/bin/python3 {__file__}', comment=comment)
 	job.minute.every(minutes)
 	ct.write()
 
