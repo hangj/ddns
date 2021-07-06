@@ -199,9 +199,6 @@ def main():
 		stop = sys.argv[1] == 'stop'
 	checkCrontab(stop=stop, minutes=3)
 
-	cfd = os.path.dirname(__file__) # current file directory
-	os.chdir(cfd)
-
 	# sys.stdout = open(os.devnull, 'w') # https://www.cnblogs.com/hangj/p/14956420.html # redirect stdout to /dev/null, for the sick of 'You have mail in /var/mail/xxx'
 
 	record_list = getRecordList(login_token, domain, sub_domain)
@@ -224,6 +221,9 @@ def main():
 
 
 if __name__ == '__main__':
+	cfd = os.path.dirname(os.path.abspath(__file__)) # current file directory
+	os.chdir(cfd)
+
 	if platform.system().lower() == 'windows':
 		sys.stdout = open(os.path.dirname(__file__) + '/ddns4DNSPod.log', 'a')
 		sys.stderr = open(os.path.dirname(__file__) + '/ddns4DNSPod.err.log', 'a')
