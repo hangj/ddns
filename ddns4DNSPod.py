@@ -225,8 +225,8 @@ if __name__ == '__main__':
 	os.chdir(cfd)
 
 	if platform.system().lower() == 'windows':
-		sys.stdout = open(os.path.dirname(__file__) + '/ddns4DNSPod.log', 'a')
-		sys.stderr = open(os.path.dirname(__file__) + '/ddns4DNSPod.err.log', 'a')
+		sys.stdout = open('./ddns4DNSPod.log', 'a')
+		sys.stderr = open('./ddns4DNSPod.err.log', 'a')
 
 	main()
 
