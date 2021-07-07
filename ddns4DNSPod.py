@@ -5,7 +5,7 @@
 # https://www.cnblogs.com/hangj/p/14942691.html
 
 import os, sys, platform
-import json, gzip
+import json, gzip, time
 from urllib import request, parse
 
 # '$ID,$Token'
@@ -193,6 +193,24 @@ def checkCrontab(stop=False, minutes=1):
 	ct.write()
 
 
+def curtime():
+    t = time.time()
+    tm = time.gmtime(t) # tm = time.localtime(time.time())
+    fmt = '%a, %d %b %Y %H:%M:%S GMT'
+    return time.strftime(fmt, tm)
+
+def localstrtime(ts=None):
+    return time.strftime('%Y %b %d %a %H_%M_%S', time.localtime(ts or time.time()))
+
+def mktimefromstr(s):
+    m = re.search('.*?(\d.*)\.', s) # timestamp
+    try:
+        return time.mktime(time.strptime(m.group(1), '%Y_%b_%d_%a_%H:%M:%S'))
+    except Exception as e:
+        return None
+    return None
+
+
 def main():
 	stop = False
 	if len(sys.argv) > 1:
@@ -213,10 +231,10 @@ def main():
 
 	res = ddnsRecord(login_token, domain, sub_domain, record_id, local_ip)
 
-	print(f"local_ip: {local_ip}")
-	print(f"inet_ip: {inet_ip}")
-	print(f"record_ip: {record_ip}")
-	print('Ddns:', res)
+	print(f"{localstrtime()} local_ip: {local_ip}")
+	print(f"{localstrtime()} inet_ip: {inet_ip}")
+	print(f"{localstrtime()} record_ip: {record_ip}")
+	print(f'{localstrtime()} Ddns: {res}')
 
 
 
