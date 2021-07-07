@@ -167,7 +167,7 @@ def checkCrontab(stop=False, minutes=1):
 
 		# pythonw 不会弹出 command prompt 窗口
 		# https://docs.microsoft.com/en-us/previous-versions/orphan-topics/ws.10/cc772785(v=ws.10)?redirectedfrom=MSDN
-		sh = f'schtasks.exe /CREATE /SC MINUTE /MO {minutes} /TN "{taskname}" /TR "pythonw {__file__}"'
+		sh = f'schtasks.exe /CREATE /SC MINUTE /MO {minutes} /TN "{taskname}" /TR "pythonw {os.path.abspath(__file__)}"'
 		with os.popen(sh) as f:
 			res = f.read()
 			print(res)
@@ -188,7 +188,7 @@ def checkCrontab(stop=False, minutes=1):
 
 	if stop: return
 
-	job = ct.new(command=f'/usr/bin/python3 {__file__}', comment=comment)
+	job = ct.new(command=f'/usr/bin/python3 {os.path.abspath(__file__)}', comment=comment)
 	job.minute.every(minutes)
 	ct.write()
 
