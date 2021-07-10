@@ -226,8 +226,8 @@ def main():
 	local_ip = getLocalIP()
 	inet_ip = getInetIP()
 
-	if not local_ip or (local_ip == record_ip and ttl < 600):
-		return
+# 	if not local_ip or (local_ip == record_ip and ttl < 600): return
+	if not inet_ip or (inet_ip == record_ip and ttl < 600):  return
 
 	res = ddnsRecord(login_token, domain, sub_domain, record_id, local_ip)
 
