@@ -236,9 +236,8 @@ def main():
 
 	if not inet_ip or (inet_ip == record_ip and ttl < 600):  return
 
-	res = ddnsRecord(login_token, domain, sub_domain, record_id, local_ip)
+	res = ddnsRecord(login_token, domain, sub_domain, record_id, inet_ip)
 
-	print(f"{localstrtime()} local_ip: {local_ip}")
 	print(f"{localstrtime()} inet_ip: {inet_ip}")
 	print(f"{localstrtime()} record_ip: {record_ip}")
 	print(f'{localstrtime()} Ddns: {res}')
