@@ -219,14 +219,21 @@ def main():
 
 	# sys.stdout = open(os.devnull, 'w') # https://www.cnblogs.com/hangj/p/14956420.html # redirect stdout to /dev/null, for the sick of 'You have mail in /var/mail/xxx'
 
+	# local_ip = getLocalIP()
+	inet_ip = getInetIP()
+
 	record_list = getRecordList(login_token, domain, sub_domain)
+	if int(record_list['status']['code']) == 10:
+		res = createRecord(login_token, domain, sub_domain, inet_ip)
+		if int(res['status']['code']) != 1:
+			print('createRecord failed: ', res)
+			return
+		else:
+			record_list = getRecordList(login_token, domain, sub_domain)
+	
 	record = record_list['records'][0]
 	record_id, record_ip, ttl = record['id'], record['value'], int(record['ttl'])
 
-	local_ip = getLocalIP()
-	inet_ip = getInetIP()
-
-# 	if not local_ip or (local_ip == record_ip and ttl < 600): return
 	if not inet_ip or (inet_ip == record_ip and ttl < 600):  return
 
 	res = ddnsRecord(login_token, domain, sub_domain, record_id, local_ip)
