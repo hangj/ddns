@@ -16,7 +16,7 @@ domain, sub_domain = 'your.domain', 'subdomain'
 def checkResponse(func):
     def wrappedFunc(*args, **kwargs):
         res = func(*args, **kwargs)
-        if int(res['status']['code']) != 1: eprint(res)
+        if int(res['status']['code']) != 1: eprint(func.__name__, res)
         return res
     return wrappedFunc
 
