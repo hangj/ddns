@@ -8,9 +8,13 @@ import os, sys, platform
 import json, gzip, time
 from urllib import request, parse
 
+
 # '$ID,$Token'
 login_token = '1234,04ab'
 domain, sub_domain = 'your.domain', 'subdomain'
+
+# os.environ["LOGIN_TOKEN"]
+# os.environ["DOMIN"], os.environ["SUB_DOMIN"]
 
 
 def checkResponse(func):
@@ -250,10 +254,11 @@ def main():
 
 if __name__ == '__main__':
     cfd = os.path.dirname(os.path.abspath(__file__)) # current file directory
+    basename = os.path.basename(__file__)
     os.chdir(cfd)
 
-    sys.stdout = open('./ddns4DNSPod.log', 'a')
-    sys.stderr = open('./ddns4DNSPod.err.log', 'a')
+    sys.stdout = open(f'./{basename}.log', 'a')
+    sys.stderr = open(f'./{basename}.err.log', 'a')
 
     main()
 
