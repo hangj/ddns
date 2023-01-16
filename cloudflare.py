@@ -90,11 +90,22 @@ def dns_patch(identifier, IP):
  
  
  
+ def get_my_global_ip():
+    conn = http.client.HTTPSConnection("httpbin.org")
+    conn.request("GET", "/ip")
+    res = conn.getresponse()
+    data = json.loads(res.read())
+
+    return data['origin']
+ 
+ 
+ 
 def main():
  
+    IP = get_my_global_ip()
     # dns_list()
-    dns_update('09f0ea0', name="example.com", IP="113.90.37.101")
-    # dns_patch('09f0ea0', IP="113.90.37.101")
+    dns_update('09f0ea0', "example.com", IP)
+    # dns_patch('09f0ea0', IP)
     # dns_detail('09f0ea0')
  
  
