@@ -24,73 +24,73 @@ headers = {
  
  
 def dns_list():
- 
+
     conn = http.client.HTTPSConnection("api.cloudflare.com")
- 
+
     conn.request("GET", f"/client/v4/zones/{CF_Zone_ID}/dns_records", headers=headers)
- 
+
     res = conn.getresponse()
     data = res.read()
- 
-    print(data.decode("utf-8"))
- 
- 
- 
+
+    return json.loads(data.decode("utf-8"))
+
+
+
 # identifier: record id
 def dns_detail(identifier):
- 
+
     conn = http.client.HTTPSConnection("api.cloudflare.com")
- 
+
     conn.request("GET", f"/client/v4/zones/{CF_Zone_ID}/dns_records/{identifier}", headers=headers)
- 
+
     res = conn.getresponse()
     data = res.read()
- 
-    print(data.decode("utf-8"))
- 
- 
- 
+
+    return json.loads(data.decode("utf-8"))
+
+
+
 # identifier: record id
 def dns_update(identifier, name, IP):
- 
+
     conn = http.client.HTTPSConnection("api.cloudflare.com")
- 
+
     payload = {
         "type": "A",
         "name": name,
         "content": IP,
         "ttl": 120,
     }
- 
+
     conn.request("PUT", f"/client/v4/zones/{CF_Zone_ID}/dns_records/{identifier}", json.dumps(payload), headers)
- 
+
     res = conn.getresponse()
     data = res.read()
- 
-    print(data.decode("utf-8"))
- 
- 
- 
-# 如果 record 原来的 ttl 是 auto, 则此操作无法将 ttl 改成制定的值, 需要先用 dns_update 全量修改该 record
+
+    return json.loads(data.decode("utf-8"))
+
+
+
 def dns_patch(identifier, IP):
- 
+
     conn = http.client.HTTPSConnection("api.cloudflare.com")
- 
+
     payload = {
         "content": IP,
-        "ttl": 120,
+        "ttl": 120, # 非 auto(1) 的 ttl, 需要设置 proxied 为 False
+        "proxied": False,
     }
- 
+
     conn.request("PATCH", f"/client/v4/zones/{CF_Zone_ID}/dns_records/{identifier}", json.dumps(payload), headers)
- 
+
     res = conn.getresponse()
     data = res.read()
- 
-    print(data.decode("utf-8"))
- 
- 
- 
- def get_my_global_ip():
+
+    return json.loads(data.decode("utf-8"))
+
+
+
+def get_my_global_ip():
     conn = http.client.HTTPSConnection("httpbin.org")
     conn.request("GET", "/ip")
     res = conn.getresponse()
@@ -102,11 +102,38 @@ def dns_patch(identifier, IP):
  
 def main():
  
-    IP = get_my_global_ip()
+    # example.com
+    identifier = '09f0e075483c89723093834'
+
+
+    my_ip = get_my_global_ip()
+
+    detail = dns_detail(identifier)
+    if not detail['success']:
+        print(detail, file=sys.stderr)
+        return
+
+    # print(detail)
+
+
+    result = detail["result"]
+
+    if result['content'] != my_ip:
+
+        patch = dns_patch(identifier, my_ip)
+
+        if not patch['success']:
+            print(patch, file=sys.stderr)
+            return
+        else:
+            # send an email to notify this change
+            pass
+
+
     # dns_list()
-    dns_update('09f0ea0', "example.com", IP)
-    # dns_patch('09f0ea0', IP)
-    # dns_detail('09f0ea0')
+    # dns_update(identifier, "example.com", IP="203.88.44.119")
+    # dns_patch(identifier, IP="203.88.44.119")
+    # dns_detail(identifier)
  
  
  
